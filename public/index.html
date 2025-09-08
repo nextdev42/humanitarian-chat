@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humanitarian Chat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="chat-page">
+    <!-- Header -->
+    <header class="chat-header">
+        <div class="header-left">
+            <h1>🌍 Humanitarian Chat</h1>
+            <span id="connectionStatus" class="status online">Online</span>
+        </div>
+        <div class="header-right">
+            <span id="userInfo" class="user-info"></span>
+            <div class="user-menu">
+                <button id="userMenuBtn" class="btn btn-secondary">⚙️</button>
+                <div id="userDropdown" class="dropdown" style="display: none;">
+                    <a href="#" id="profileBtn">Profile</a>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-header">
+                    <h3>Groups</h3>
+                    <button id="addGroupBtn" class="btn btn-sm">+</button>
+                </div>
+                <div id="groupsList" class="groups-list">
+                    <!-- Groups will be loaded here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-header">
+                    <h3>Tasks</h3>
+                    <span id="taskCount" class="count">0</span>
+                </div>
+                <div id="tasksList" class="tasks-list">
+                    <!-- Tasks will be loaded here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-content">
+                    <h2>Welcome to Humanitarian Chat</h2>
+                    <p>Select a group from the sidebar to start communicating with your team.</p>
+                    <div class="quick-actions">
+                        <button id="createGroupBtn" class="btn btn-primary">Create New Group</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chatArea" class="chat-area" style="display: none;">
+                <!-- Chat Header -->
+                <div class="chat-area-header">
+                    <div class="group-info">
+                        <h3 id="currentGroupName">Group Name</h3>
+                        <span id="currentGroupMembers" class="group-members">0 members</span>
+                    </div>
+                    <div class="chat-actions">
+                        <button id="searchBtn" class="btn btn-sm">🔍</button>
+                        <button id="groupSettingsBtn" class="btn btn-sm">⚙️</button>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div id="messagesContainer" class="messages-container">
+                    <!-- Messages will be loaded here -->
+                </div>
+
+                <!-- Typing Indicators -->
+                <div id="typingIndicator" class="typing-indicator" style="display: none;">
+                    <span id="typingText"></span>
+                </div>
+
+                <!-- Message Input -->
+                <div class="message-input-container">
+                    <div class="message-input-wrapper">
+                        <button id="attachBtn" class="btn btn-sm">📎</button>
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Type your message... (Press Enter to send)"
+                            rows="1"></textarea>
+                        <button id="sendBtn" class="btn btn-primary">Send</button>
+                    </div>
+                    <div class="input-actions">
+                        <button id="tagBtn" class="btn btn-sm">🏷️ Tag</button>
+                        <button id="taskBtn" class="btn btn-sm">✅ Task</button>
+                        <button id="formBtn" class="btn btn-sm">📝 Form</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Group Creation Modal -->
+    <div id="groupModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Group</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="groupForm">
+                    <div class="form-group">
+                        <label for="groupName">Group Name</label>
+                        <input type="text" id="groupName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupType">Group Type</label>
+                        <select id="groupType">
+                            <option value="team">Team</option>
+                            <option value="project">Project</option>
+                            <option value="emergency">Emergency Response</option>
+                            <option value="general">General</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupDescription">Description</label>
+                        <textarea id="groupDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary modal-close">Cancel</button>
+                <button type="submit" form="groupForm" class="btn btn-primary">Create Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Creation Modal -->
+    <div id="taskModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Task</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskTitle">Task Title</label>
+                        <input type="text" id="taskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskAssignee">Assign to</label>
+                        <select id="taskAssignee">
+                            <option value="">Select user...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="datetime-local" id="taskDueDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary modal-close">Cancel</button>
+                <button type="submit" form="taskForm" class="btn btn-primary">Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Upload Input (Hidden) -->
+    <input type="file" id="fileInput" style="display: none;" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt">
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/offline.js"></script>
+</body>
+</html>
